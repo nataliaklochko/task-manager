@@ -1,8 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends
-from uuid import UUID
 from dependency_injector.wiring import inject, Provide
+from uuid import UUID
 
-from src.app.models.tasks import TaskCreateRequest, TaskUpdateRequest, TaskResponse
+from src.app.models.tasks import (
+    CreateTaskRequest,
+    UpdateTaskRequest,
+    TaskResponse,
+)
 from src.usecases.task_service import TaskService
 from src.app.container import Container
 
@@ -13,7 +17,7 @@ router = APIRouter()
 @router.post("/tasks/", response_model=TaskResponse)
 @inject
 async def create_task(
-    request: TaskCreateRequest,
+    request: CreateTaskRequest,
     service: TaskService = Depends(Provide[Container.task_service]),
 ):
     task = await service.create_task(
@@ -22,7 +26,7 @@ async def create_task(
     return TaskResponse.from_entity(task)
 
 
-@router.get("/tasks/", response_model=TaskResponse)
+@router.get("/users/{user_id}/tasks/{task_id}", response_model=TaskResponse)
 @inject
 async def get_task(
     task_id: UUID,
@@ -35,21 +39,22 @@ async def get_task(
     return TaskResponse.from_entity(task)
 
 
-@router.get("/tasks/{user_id}", response_model=list[TaskResponse])
+@router.get("/users/{user_id}/tasks/", response_model=list[TaskResponse])
 @inject
 async def list_tasks(
-    user_id: UUID, service: TaskService = Depends(Provide[Container.task_service])
+    user_id: UUID,
+    service: TaskService = Depends(Provide[Container.task_service]),
 ):
     tasks = await service.list_tasks(user_id)
     return [TaskResponse.from_entity(t) for t in tasks]
 
 
-@router.put("/tasks/", response_model=TaskResponse)
+@router.put("/users/{user_id}/tasks/{task_id}", response_model=TaskResponse)
 @inject
 async def update_task(
     task_id: UUID,
     user_id: UUID,
-    request: TaskUpdateRequest,
+    request: UpdateTaskRequest,
     service: TaskService = Depends(Provide[Container.task_service]),
 ):
     task = await service.update_task(
@@ -64,7 +69,7 @@ async def update_task(
     return TaskResponse.from_entity(task)
 
 
-@router.delete("/tasks/")
+@router.delete("/users/{user_id}/tasks/{task_id}")
 @inject
 async def delete_task(
     task_id: UUID,

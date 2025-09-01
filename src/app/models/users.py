@@ -4,7 +4,7 @@ from uuid import UUID
 from src.usecases.models import User
 
 
-class UserCreateRequest(BaseModel):
+class CreateUserRequest(BaseModel):
     username: str
 
 
