@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from uuid import UUID
 
 from src.usecases.models import User
 
@@ -9,7 +8,7 @@ class CreateUserRequest(BaseModel):
 
 
 class UserResponse(BaseModel):
-    id: UUID
+    id: int
     username: str
 
     @classmethod

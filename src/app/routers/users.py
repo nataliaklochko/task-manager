@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
 from dependency_injector.wiring import inject, Provide
-from uuid import UUID
 
 from src.app.models.users import CreateUserRequest, UserResponse
 from src.usecases.user_service import UserService
@@ -23,7 +22,7 @@ async def create_user(
 @router.get("/users/{user_id}", response_model=UserResponse)
 @inject
 async def get_user(
-    user_id: UUID,
+    user_id: int,
     service: UserService = Depends(Provide[Container.user_service]),
 ):
     user = await service.get_user(user_id)

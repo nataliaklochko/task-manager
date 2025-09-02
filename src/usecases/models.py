@@ -1,4 +1,3 @@
-import uuid
 from enum import Enum
 from dataclasses import dataclass
 
@@ -11,14 +10,14 @@ class Status(str, Enum):
 
 @dataclass
 class Task:
-    id: uuid.UUID
-    user_id: uuid.UUID
+    user_id: int
     title: str
     description: str | None
+    id: int | None = None
     status: Status = Status.created
 
 
 @dataclass
 class User:
-    id: uuid.UUID
     username: str
+    id: int | None = None

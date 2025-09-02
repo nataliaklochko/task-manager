@@ -1,5 +1,3 @@
-import uuid
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -14,7 +12,6 @@ class PostgresRepository(IRepository):
 
     async def create_task(self, task: Task) -> Task:
         orm_task = TaskORM(
-            id=task.id,
             title=task.title,
             description=task.description,
             status=task.status,
@@ -22,9 +19,15 @@ class PostgresRepository(IRepository):
         )
         self.session.add(orm_task)
         await self.session.commit()
-        return task
+        return Task(
+            user_id=orm_task.id,
+            title=orm_task.title,
+            description=orm_task.description,
+            id=orm_task.id,
+            status=orm_task.status,
+        )
 
-    async def get_task(self, user_id: uuid.UUID, task_id: uuid.UUID) -> Task | None:
+    async def get_task(self, user_id: int, task_id: int) -> Task | None:
         result = await self.session.execute(
             select(TaskORM).where(TaskORM.id == task_id, TaskORM.user_id == user_id)
         )
@@ -39,7 +42,7 @@ class PostgresRepository(IRepository):
             )
         return None
 
-    async def list_tasks(self, user_id: uuid.UUID) -> list[Task]:
+    async def list_tasks(self, user_id: int) -> list[Task]:
         result = await self.session.execute(
             select(TaskORM).where(TaskORM.user_id == user_id)
         )
@@ -54,7 +57,7 @@ class PostgresRepository(IRepository):
             for t in result.scalars().all()
         ]
 
-    async def update_task(self, user_id: uuid.UUID, task: Task) -> Task | None:
+    async def update_task(self, user_id: int, task: Task) -> Task | None:
         result = await self.session.execute(
             select(TaskORM).where(TaskORM.id == task.id, TaskORM.user_id == user_id)
         )
@@ -65,9 +68,15 @@ class PostgresRepository(IRepository):
         orm_task.description = task.description
         orm_task.status = task.status
         await self.session.commit()
-        return task
+        return Task(
+            id=orm_task.id,
+            title=orm_task.title,
+            description=orm_task.description,
+            status=orm_task.status,
+            user_id=orm_task.user_id,
+        )
 
-    async def delete_task(self, user_id: uuid.UUID, task_id: uuid.UUID) -> bool:
+    async def delete_task(self, user_id: int, task_id: int) -> bool:
         result = await self.session.execute(
             select(TaskORM).where(TaskORM.id == task_id, TaskORM.user_id == user_id)
         )
@@ -82,9 +91,12 @@ class PostgresRepository(IRepository):
         orm_user = UserORM(id=user.id, username=user.username)
         self.session.add(orm_user)
         await self.session.commit()
-        return user
+        return User(
+            username=orm_user.username,
+            id=orm_user.id,
+        )
 
-    async def get_user(self, user_id: uuid.UUID) -> User | None:
+    async def get_user(self, user_id: int) -> User | None:
         result = await self.session.execute(
             select(UserORM).where(UserORM.id == user_id)
         )

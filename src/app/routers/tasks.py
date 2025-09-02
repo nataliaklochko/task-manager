@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
 from dependency_injector.wiring import inject, Provide
-from uuid import UUID
 
 from src.app.models.tasks import (
     CreateTaskRequest,
@@ -29,8 +28,8 @@ async def create_task(
 @router.get("/users/{user_id}/tasks/{task_id}", response_model=TaskResponse)
 @inject
 async def get_task(
-    task_id: UUID,
-    user_id: UUID,
+    task_id: int,
+    user_id: int,
     service: TaskService = Depends(Provide[Container.task_service]),
 ):
     task = await service.get_task(user_id=user_id, task_id=task_id)
@@ -42,7 +41,7 @@ async def get_task(
 @router.get("/users/{user_id}/tasks/", response_model=list[TaskResponse])
 @inject
 async def list_tasks(
-    user_id: UUID,
+    user_id: int,
     service: TaskService = Depends(Provide[Container.task_service]),
 ):
     tasks = await service.list_tasks(user_id)
@@ -52,8 +51,8 @@ async def list_tasks(
 @router.put("/users/{user_id}/tasks/{task_id}", response_model=TaskResponse)
 @inject
 async def update_task(
-    task_id: UUID,
-    user_id: UUID,
+    task_id: int,
+    user_id: int,
     request: UpdateTaskRequest,
     service: TaskService = Depends(Provide[Container.task_service]),
 ):
@@ -72,8 +71,8 @@ async def update_task(
 @router.delete("/users/{user_id}/tasks/{task_id}")
 @inject
 async def delete_task(
-    task_id: UUID,
-    user_id: UUID,
+    task_id: int,
+    user_id: int,
     service: TaskService = Depends(Provide[Container.task_service]),
 ):
     success = await service.delete_task(user_id, task_id)

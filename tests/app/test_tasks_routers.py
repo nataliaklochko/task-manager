@@ -21,7 +21,7 @@ def test_get_task(client, user_id, task_id):
 
 
 def test_get_task_not_found(client):
-    _id = "00000000-0000-0000-0000-000000000000"
+    _id = "1000"
     response = client.get(f"/users/{_id}/tasks/{_id}")
     assert response.status_code == 404
 
@@ -35,7 +35,7 @@ def test_list_tasks(client, user_id):
 
 
 def test_list_tasks_empty(client):
-    _id = "00000000-0000-0000-0000-000000000000"
+    _id = "1000000"
     response = client.get(f"/users/{_id}/tasks/")
     assert response.status_code == 200
 

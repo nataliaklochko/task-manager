@@ -1,5 +1,3 @@
-import uuid
-
 from src.usecases.models import Task, Status
 from src.interfaces.repository import IRepository
 
@@ -9,10 +7,9 @@ class TaskService:
         self.repo = repo
 
     async def create_task(
-        self, user_id: uuid.UUID, title: str, description: str | None = None
+        self, user_id: int, title: str, description: str | None = None
     ) -> Task:
         task = Task(
-            id=uuid.uuid4(),
             user_id=user_id,
             title=title,
             description=description,
@@ -20,16 +17,16 @@ class TaskService:
         )
         return await self.repo.create_task(task)
 
-    async def get_task(self, user_id: uuid.UUID, task_id: uuid.UUID) -> Task | None:
+    async def get_task(self, user_id: int, task_id: int) -> Task | None:
         return await self.repo.get_task(user_id, task_id)
 
-    async def list_tasks(self, user_id: uuid.UUID) -> list[Task]:
+    async def list_tasks(self, user_id: int) -> list[Task]:
         return await self.repo.list_tasks(user_id)
 
     async def update_task(
         self,
-        user_id: uuid.UUID,
-        task_id: uuid.UUID,
+        user_id: int,
+        task_id: int,
         title: str | None = None,
         description: str | None = None,
         status: Status | None = None,
@@ -47,5 +44,5 @@ class TaskService:
 
         return await self.repo.update_task(user_id=user_id, task=task)
 
-    async def delete_task(self, user_id: uuid.UUID, task_id: uuid.UUID) -> bool:
+    async def delete_task(self, user_id: int, task_id: int) -> bool:
         return await self.repo.delete_task(user_id, task_id)

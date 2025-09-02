@@ -1,4 +1,3 @@
-import uuid
 from typing import Protocol
 
 from src.usecases.models import Task, User
@@ -8,22 +7,22 @@ class IRepository(Protocol):
     async def create_task(self, task: Task) -> Task:
         raise NotImplementedError
 
-    async def get_task(self, user_id: uuid.UUID, task_id: uuid.UUID) -> Task | None:
+    async def get_task(self, user_id: int, task_id: int) -> Task | None:
         raise NotImplementedError
 
-    async def list_tasks(self, user_id: uuid.UUID) -> list[Task]:
+    async def list_tasks(self, user_id: int) -> list[Task]:
         raise NotImplementedError
 
-    async def update_task(self, user_id: uuid.UUID, task: Task) -> Task | None:
+    async def update_task(self, user_id: int, task: Task) -> Task | None:
         raise NotImplementedError
 
-    async def delete_task(self, user_id: uuid.UUID, task_id: uuid.UUID) -> bool:
+    async def delete_task(self, user_id: int, task_id: int) -> bool:
         raise NotImplementedError
 
     async def create_user(self, user: User) -> User:
         raise NotImplementedError
 
-    async def get_user(self, user_id: uuid.UUID) -> User | None:
+    async def get_user(self, user_id: int) -> User | None:
         raise NotImplementedError
 
     async def list_users(self) -> list[User]:

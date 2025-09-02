@@ -1,12 +1,11 @@
 from pydantic import BaseModel
-from uuid import UUID
 
 from src.usecases.models import Status, Task
 
 
 class CreateTaskRequest(BaseModel):
+    user_id: int
     title: str
-    user_id: UUID
     description: str | None = None
 
 
@@ -17,12 +16,12 @@ class UpdateTaskRequest(BaseModel):
 
 
 class ListTaskRequest(BaseModel):
-    user_id: UUID
+    user_id: int
 
 
 class TaskResponse(BaseModel):
-    id: UUID
-    user_id: UUID
+    id: int
+    user_id: int
     title: str
     description: str | None
     status: Status
